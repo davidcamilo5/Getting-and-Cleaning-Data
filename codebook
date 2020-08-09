@@ -1,3 +1,58 @@
-#this is
-###this
-##thi
+#### CODE ANALYSIS
+
+###THE STRUCTURE OF THE CODE
+
+##NAME OF THE ALL VARIABLE 
+#the variable f <- is from the text separate from features.txt with <- 561 obs of 2 var
+  f <- read.table("UCI HAR Dataset/features.txt", col.names = c("n","functions"))
+#the variable a <- is from the text separate from activity_labels.txt <- 6 obs of 2 var
+  a <- read.table("UCI HAR Dataset/activity_labels.txt", col.names = c("code", "activity"))
+#the variable s <- is from the text separate from subject_test.txt <- 2947 obs of 1 var
+  s <- read.table("UCI HAR Dataset/test/subject_test.txt", col.names = "subject")
+#the variable we <- is from the text separate from X_test.txt <- 2947 obs of 561 var
+  we<- read.table("UCI HAR Dataset/test/X_test.txt", col.names = f$functions)
+#the variable pe <- is from the text separate from y_test.txt <- 2947 obs of 1 var
+  pe<- read.table("UCI HAR Dataset/test/y_test.txt", col.names = "code")
+#the variable b <- is from the text separate from subject_train.txt <- 7352 obs of 1 var
+  b <- read.table("UCI HAR Dataset/train/subject_train.txt", col.names = "subject")
+#the variable wt <- is from the text separate from X_train.txt <- 7352 obs of 561 var
+  wt <- read.table("UCI HAR Dataset/train/X_train.txt", col.names = f$functions)
+#the variable pt <- is from the text separate from y_train.txt <- 7352 obs of 1 var
+  pt<- read.table("UCI HAR Dataset/train/y_train.txt", col.names = "code")
+  
+##this process is te combine of Robjects by rows or columns
+#use the rbind to take a sequence of vector, matrix or data-frame arguments and combine by rows of the wt and we  
+  x<- rbind(wt, we)
+#use the rbind to take a sequence of vector, matrix or data-frame arguments and combine by rows of the pt and pe  
+  y<- rbind(pt, pe)
+#use the rbind to take a sequence of vector,by rows of the bs and s with 10299 obs of 1 var 
+  Sub <- rbind(b, s)
+  Mergeddata <- cbind(Sub, y, x)
+# use the "select" to Select variables in a data frame based on their properties
+  Data <- Mergeddata %>% select(subject, code, contains("mean"), contains("std"))
+#use gsub for perform replacement of the first and all matches respectively
+  gsub("Acc", "Accelerometer", names(Data))
+  gsub("Gyro", "Gyroscope", names(Data))
+  gsub("BodyBody", "Body", names(Data))
+  gsub("Mag", "Magnitude", names(Data))
+  gsub("^t", "Time", names(Data))
+  gsub("^f", "Frequency", names(Data))
+  gsub("tBody", "TimeBody", names(Data))
+  gsub("-mean()", "Mean", names(Data))
+  gsub("-std()", "STD", names(Data))
+  gsub("-freq()", "Frequency", names(Data))
+  gsub("angle", "Angle", names(Data))
+  gsub("gravity", "Gravity", names(Data))
+#and the end only use group and summarise for creates a new data frame
+  FData <- Data %>%
+  group_by(subject, activity) %>%
+  summarise_all(funs(mean))  
+  
+##ANALISYS OF THE RESULTS
+  The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years.
+  Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) 
+  wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, 
+  we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. 
+  The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, 
+  where 70% 
+  of the volunteers was selected for generating the training data and 30% the test data
